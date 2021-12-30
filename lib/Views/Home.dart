@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sci_que/Util/Util.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:sci_que/Views/Question.dart';
 
 class HOME extends StatefulWidget {
   const HOME({Key? key}) : super(key: key);
@@ -15,7 +15,7 @@ class _HOMEState extends State<HOME> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(40, 37, 97, 1),
       body: ListView(
-          padding: EdgeInsets.only(top: 80, left: 40, right: 40),
+          padding: EdgeInsets.only(top: 50, left: 40, right: 40),
           physics: const NeverScrollableScrollPhysics(),
           children: <Widget>[
             Container(
@@ -32,7 +32,7 @@ class _HOMEState extends State<HOME> {
               height: 20,
             ),
             Container(
-              padding: EdgeInsets.only(top: 30, left: 10, right: 10),
+              padding: EdgeInsets.only(top: 50, left: 10, right: 10),
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
@@ -55,12 +55,12 @@ class _HOMEState extends State<HOME> {
                     height: 20,
                   ),
                   Text(
-                    'Science Quiz with 10 multiple choice questions which can be complete approximately by less than 10 minutes. You can only answer once for every question and press submit button to check the answer.',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    'Science Quiz with 10 multiple choice questions which can be complete approximately by less than 10 minutes. You can only answer once for every question and press submit button to check the answer after completing each question.',
+                    style: TextStyle(color: Colors.white, fontSize: 19),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
-                    height: 40,
+                    height: 50,
                   ),
                   Text(
                     'Tap to start the quiz',
@@ -71,7 +71,7 @@ class _HOMEState extends State<HOME> {
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 20,
             ),
             Container(
               child: ElevatedButton(
@@ -87,7 +87,7 @@ class _HOMEState extends State<HOME> {
                       fontSize: 25),
                 ),
                 onPressed: () {
-                  UtilFunctions.navigateTo(context, HOME());
+                  UtilFunctions.navigateTo(context, Question());
                 },
               ),
             ),
@@ -103,24 +103,20 @@ class _HOMEState extends State<HOME> {
               padding: EdgeInsets.only(top: 5, left: 55, right: 55),
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                      primary: Colors.white.withOpacity(0.8),
                       padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 30)),
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
                   child: Text(
                     'Take a Course',
                     style: TextStyle(
                         color: Color.fromRGBO(40, 37, 97, 1),
                         fontWeight: FontWeight.w700,
-                        fontSize: 18),
+                        fontSize: 17),
                   ),
-                  onPressed: _launchURL),
+                  onPressed: () => UtilFunctions.launchURL(
+                      'https://www.coursera.org/search?query=science')),
             ),
           ]),
     );
-  }
-
-  void _launchURL() async {
-    if (!await launch('https://www.coursera.org/search?query=science'))
-      throw 'Could not launch coursera.com';
   }
 }
