@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sci_que/Util/Util.dart';
+import 'package:sci_que/Views/Home.dart';
+import 'package:sci_que/Widgets/Alert.dart';
 import 'package:sci_que/Widgets/Answer.dart';
 
 class Question extends StatefulWidget {
@@ -24,12 +28,23 @@ class _QuestionState extends State<Question> {
         _totalScore++;
         correctAnswerSelected = true;
       }
+      print(answerWasSelected);
+      print(endOfQuiz);
+      print(correctAnswerSelected);
+      if (!endOfQuiz && !correctAnswerSelected) {
+        print('correct toast');
+        Fluttertoast.showToast(
+          msg: "Wrong answer",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
       // adding to the score tracker on top
       _scoreTracker.add(
         answerScore
             ? Icon(
                 Icons.check_circle,
-                color: Colors.white,
+                color: Colors.green,
               )
             : Icon(
                 Icons.cancel_sharp,
@@ -50,10 +65,6 @@ class _QuestionState extends State<Question> {
       answerWasSelected = false;
       correctAnswerSelected = false;
     });
-    // what happens at the end of the quiz
-    if (_questionIndex >= _questions.length) {
-      _resetQuiz();
-    }
   }
 
   void _resetQuiz() {
@@ -61,6 +72,8 @@ class _QuestionState extends State<Question> {
       _questionIndex = 0;
       _totalScore = 0;
       _scoreTracker = [];
+      correctAnswerSelected = false;
+      answerWasSelected = false;
       endOfQuiz = false;
     });
   }
@@ -82,7 +95,7 @@ class _QuestionState extends State<Question> {
         child: Column(
           children: [
             SizedBox(
-              height: 15.0,
+              height: 25.0,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +108,7 @@ class _QuestionState extends State<Question> {
               ],
             ),
             SizedBox(
-              height: 15.0,
+              height: 25.0,
             ),
             Container(
               width: double.infinity,
@@ -131,7 +144,7 @@ class _QuestionState extends State<Question> {
                 answerColor: answerWasSelected
                     ? answer['score'] as bool
                         ? Colors.green
-                        : Colors.red
+                        : Colors.pinkAccent
                     : Color.fromRGBO(40, 37, 97, 1),
                 answerTap: () {
                   // if answer was already selected then nothing happens onTap
@@ -160,7 +173,41 @@ class _QuestionState extends State<Question> {
                     ));
                     return;
                   }
-                  _nextQuestion();
+                  if (endOfQuiz) {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: Center(
+                          child: Text(_totalScore > 4
+                              ? 'Congratulations!'
+                              : 'Better luck next time!'),
+                        ),
+                        content: Container(
+                          height: 40,
+                          child: Center(
+                            child: Text(_totalScore > 4
+                                ? 'Your final score is: $_totalScore'
+                                : 'Your final score is: $_totalScore.'),
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () =>
+                                UtilFunctions.navigateTo(context, HOME()),
+                            child: const Text('Home'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              _resetQuiz();
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Restart Quiz'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else
+                    _nextQuestion();
                 },
                 child: Text(
                   endOfQuiz ? 'Restart Quiz' : 'Next Question',
@@ -168,52 +215,28 @@ class _QuestionState extends State<Question> {
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                '${_totalScore.toString()}/${_questions.length}',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.bold),
-              ),
+            SizedBox(
+              height: 25,
             ),
-            if (answerWasSelected && !endOfQuiz)
-              Container(
-                height: 70,
-                width: double.infinity,
-                color: correctAnswerSelected ? Colors.green : Colors.red,
-                child: Center(
-                  child: Text(
-                    correctAnswerSelected
-                        ? 'Correct, Well done!'
-                        : 'Wrong, Try next time!',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            if (endOfQuiz)
-              Container(
-                height: 80,
-                width: double.infinity,
-                color: Colors.black,
-                child: Center(
-                  child: Text(
-                    _totalScore > 4
-                        ? 'Congratulations! Your final score is: $_totalScore'
-                        : 'Your final score is: $_totalScore. Better luck next time!',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: _totalScore > 4 ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ),
-              ),
+            // if (endOfQuiz)
+            // Alert()
+            // Container(
+            //   height: 80,
+            //   width: double.infinity,
+            //   color: Colors.black,
+            //   child: Center(
+            //     child: Text(
+            //       _totalScore > 4
+            //           ? 'Congratulations! Your final score is: $_totalScore'
+            //           : 'Your final score is: $_totalScore. Better luck next time!',
+            //       style: TextStyle(
+            //         fontSize: 20.0,
+            //         fontWeight: FontWeight.bold,
+            //         color: _totalScore > 4 ? Colors.green : Colors.red,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -91,7 +91,7 @@ class _State extends State<LoginPage> {
       Fluttertoast.showToast(
         msg: "Password Incorrect",
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM, // Also possible "TOP" and "CENTER"
+        gravity: ToastGravity.BOTTOM,
       );
     }
   }
