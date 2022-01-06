@@ -1,8 +1,8 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sci_que/Util/Util.dart';
 import 'package:sci_que/Views/Home.dart';
-import 'package:sci_que/Widgets/Alert.dart';
 import 'package:sci_que/Widgets/Answer.dart';
 
 class Question extends StatefulWidget {
@@ -174,38 +174,27 @@ class _QuestionState extends State<Question> {
                     return;
                   }
                   if (endOfQuiz) {
-                    showDialog<String>(
+                    AwesomeDialog(
                       context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Center(
-                          child: Text(_totalScore > 4
-                              ? 'Congratulations!'
-                              : 'Better luck next time!'),
-                        ),
-                        content: Container(
-                          height: 40,
-                          child: Center(
-                            child: Text(_totalScore > 4
-                                ? 'Your final score is: $_totalScore'
-                                : 'Your final score is: $_totalScore.'),
-                          ),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () =>
-                                UtilFunctions.navigateTo(context, HOME()),
-                            child: const Text('Home'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              _resetQuiz();
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Restart Quiz'),
-                          ),
-                        ],
-                      ),
-                    );
+                      dialogType: _totalScore > 4
+                          ? DialogType.SUCCES
+                          : DialogType.ERROR,
+                      headerAnimationLoop: true,
+                      animType: AnimType.BOTTOMSLIDE,
+                      title: _totalScore > 4
+                          ? 'Congratulations!'
+                          : 'Better luck next time!',
+                      desc: 'Score: $_totalScore',
+                      buttonsTextStyle: TextStyle(color: Colors.black),
+                      showCloseIcon: false,
+                      btnCancelText: 'Home',
+                      btnCancelOnPress: () =>
+                          UtilFunctions.navigateTo(context, HOME()),
+                      btnOkText: 'Retry',
+                      btnOkOnPress: () {
+                        _resetQuiz();
+                      },
+                    )..show();
                   } else
                     _nextQuestion();
                 },
@@ -218,25 +207,6 @@ class _QuestionState extends State<Question> {
             SizedBox(
               height: 25,
             ),
-            // if (endOfQuiz)
-            // Alert()
-            // Container(
-            //   height: 80,
-            //   width: double.infinity,
-            //   color: Colors.black,
-            //   child: Center(
-            //     child: Text(
-            //       _totalScore > 4
-            //           ? 'Congratulations! Your final score is: $_totalScore'
-            //           : 'Your final score is: $_totalScore. Better luck next time!',
-            //       style: TextStyle(
-            //         fontSize: 20.0,
-            //         fontWeight: FontWeight.bold,
-            //         color: _totalScore > 4 ? Colors.green : Colors.red,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

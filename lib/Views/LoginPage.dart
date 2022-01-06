@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sci_que/Util/Util.dart';
 import 'package:sci_que/Views/Home.dart';
-// import 'package:sci_que/Views/Splash_screen.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:sci_que/Widgets/CustomText.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:vibration/vibration.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,9 +12,16 @@ class LoginPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _State();
 }
 
+// void main(List<String> args, BuildContext context) {
+//   GetStorage box = GetStorage();
+//   if (box.read('session_uname') != '' || box.read('session_uname') != null)
+//     UtilFunctions.navigateTo(context, HOME());
+// }
+
 class _State extends State<LoginPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  GetStorage box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -79,10 +87,12 @@ class _State extends State<LoginPage> {
   }
 
   //Password Validation
-  validate() {
+  validate() async {
     print(nameController.text);
     print(passwordController.text);
     if (nameController.text == "Navindu" && passwordController.text == "1234") {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('user', nameController.text);
       UtilFunctions.navigateTo(context, HOME());
     } else {
       // if (await Vibration.hasVibrator()) {
