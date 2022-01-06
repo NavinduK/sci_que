@@ -1,9 +1,11 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sci_que/Util/Util.dart';
 import 'package:sci_que/Views/Home.dart';
 import 'package:sci_que/Widgets/Answer.dart';
+import 'package:sci_que/Widgets/ScaffoldWidget.dart';
 
 class Question extends StatefulWidget {
   @override
@@ -34,10 +36,11 @@ class _QuestionState extends State<Question> {
       if (!endOfQuiz && !correctAnswerSelected) {
         print('correct toast');
         Fluttertoast.showToast(
-          msg: "Wrong answer",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-        );
+            msg: "Wrong answer",
+            fontSize: 20,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            webPosition: "center");
       }
       // adding to the score tracker on top
       _scoreTracker.add(
@@ -80,9 +83,8 @@ class _QuestionState extends State<Question> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(40, 37, 97, 1),
-      appBar: AppBar(
+    return ScaffoldWidget(
+      app: AppBar(
         backgroundColor: Colors.pinkAccent,
         title: Text(
           'QUESTION ${(_questionIndex + 1).toString()}',
@@ -91,123 +93,129 @@ class _QuestionState extends State<Question> {
         ),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 25.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (_scoreTracker.length == 0)
-                  SizedBox(
-                    height: 24.0,
+      body: Container(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 50.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_scoreTracker.length == 0)
+                    SizedBox(
+                      height: 24.0,
+                    ),
+                  if (_scoreTracker.length > 0) ..._scoreTracker
+                ],
+              ),
+              SizedBox(
+                height: 40.0,
+              ),
+              Container(
+                width: double.infinity,
+                height: 130.0,
+                margin: EdgeInsets.only(left: 30.0, right: 30.0),
+                padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                decoration: BoxDecoration(
+                  color: Colors.pinkAccent,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text(
+                    _questions[_questionIndex]['question'] as String,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                if (_scoreTracker.length > 0) ..._scoreTracker
-              ],
-            ),
-            SizedBox(
-              height: 25.0,
-            ),
-            Container(
-              width: double.infinity,
-              height: 130.0,
-              margin: EdgeInsets.only(left: 30.0, right: 30.0),
-              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-              decoration: BoxDecoration(
-                color: Colors.pinkAccent,
-                borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
-              child: Center(
-                child: Text(
-                  _questions[_questionIndex]['question'] as String,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+              SizedBox(
+                height: 15.0,
+              ),
+              ...(_questions[_questionIndex]['answers']
+                      as List<Map<String, Object>>)
+                  .map(
+                (answer) => Answer(
+                  answerText: answer['answerText'].toString(),
+                  correct: answer['score'] as bool,
+                  answerWasSelected: answerWasSelected,
+                  answerColor: answerWasSelected
+                      ? answer['score'] as bool
+                          ? Colors.green
+                          : Colors.pinkAccent
+                      : Color.fromRGBO(40, 37, 97, 1),
+                  answerTap: () {
+                    // if answer was already selected then nothing happens onTap
+                    if (answerWasSelected) {
+                      print('already selected');
+                      return;
+                    }
+                    //answer is being selected
+                    _questionAnswered(answer['score'] as bool);
+                  },
+                ),
+              ),
+              SizedBox(height: 25.0),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10.0, left: 30.0, right: 30.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.pinkAccent,
+                    minimumSize: Size(double.infinity, 70.0),
+                  ),
+                  onPressed: () {
+                    if (!answerWasSelected) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.pinkAccent,
+                        content: Text(
+                          'Select an answer before going to the next question',
+                          textAlign: TextAlign.center,
+                        ),
+                      ));
+                      return;
+                    }
+                    if (endOfQuiz) {
+                      AwesomeDialog(
+                        width: kIsWeb ? 450 : null,
+                        context: context,
+                        dialogType: _totalScore > 4
+                            ? DialogType.SUCCES
+                            : DialogType.ERROR,
+                        headerAnimationLoop: true,
+                        animType: AnimType.BOTTOMSLIDE,
+                        title: _totalScore > 4
+                            ? 'Congratulations!'
+                            : 'Better luck next time!',
+                        desc: 'Score: $_totalScore',
+                        buttonsTextStyle: TextStyle(color: Colors.black),
+                        showCloseIcon: false,
+                        btnCancelText: 'Home',
+                        btnCancelOnPress: () =>
+                            UtilFunctions.navigateTo(context, HOME()),
+                        btnOkText: 'Retry',
+                        btnOkOnPress: () {
+                          _resetQuiz();
+                        },
+                      )..show();
+                    } else
+                      _nextQuestion();
+                  },
+                  child: Text(
+                    endOfQuiz ? 'Restart Quiz' : 'Next Question',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            ...(_questions[_questionIndex]['answers']
-                    as List<Map<String, Object>>)
-                .map(
-              (answer) => Answer(
-                answerText: answer['answerText'].toString(),
-                correct: answer['score'] as bool,
-                answerWasSelected: answerWasSelected,
-                answerColor: answerWasSelected
-                    ? answer['score'] as bool
-                        ? Colors.green
-                        : Colors.pinkAccent
-                    : Color.fromRGBO(40, 37, 97, 1),
-                answerTap: () {
-                  // if answer was already selected then nothing happens onTap
-                  if (answerWasSelected) {
-                    print('already selected');
-                    return;
-                  }
-                  //answer is being selected
-                  _questionAnswered(answer['score'] as bool);
-                },
+              SizedBox(
+                height: 25,
               ),
-            ),
-            SizedBox(height: 25.0),
-            Padding(
-              padding: EdgeInsets.only(bottom: 10.0, left: 30.0, right: 30.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.pinkAccent,
-                  minimumSize: Size(double.infinity, 70.0),
-                ),
-                onPressed: () {
-                  if (!answerWasSelected) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          'Please select an answer before going to the next question'),
-                    ));
-                    return;
-                  }
-                  if (endOfQuiz) {
-                    AwesomeDialog(
-                      context: context,
-                      dialogType: _totalScore > 4
-                          ? DialogType.SUCCES
-                          : DialogType.ERROR,
-                      headerAnimationLoop: true,
-                      animType: AnimType.BOTTOMSLIDE,
-                      title: _totalScore > 4
-                          ? 'Congratulations!'
-                          : 'Better luck next time!',
-                      desc: 'Score: $_totalScore',
-                      buttonsTextStyle: TextStyle(color: Colors.black),
-                      showCloseIcon: false,
-                      btnCancelText: 'Home',
-                      btnCancelOnPress: () =>
-                          UtilFunctions.navigateTo(context, HOME()),
-                      btnOkText: 'Retry',
-                      btnOkOnPress: () {
-                        _resetQuiz();
-                      },
-                    )..show();
-                  } else
-                    _nextQuestion();
-                },
-                child: Text(
-                  endOfQuiz ? 'Restart Quiz' : 'Next Question',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
