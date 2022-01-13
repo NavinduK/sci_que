@@ -6,18 +6,12 @@ import 'package:sci_que/Widgets/CustomText.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sci_que/Widgets/ScaffoldWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:vibration/vibration.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _State();
 }
-
-// void main(List<String> args, BuildContext context) {
-//   GetStorage box = GetStorage();
-//   if (box.read('session_uname') != '' || box.read('session_uname') != null)
-//     UtilFunctions.navigateTo(context, HOME());
-// }
 
 class _State extends State<LoginPage> {
   TextEditingController nameController = TextEditingController();
@@ -31,68 +25,67 @@ class _State extends State<LoginPage> {
         body: Container(
             child: Padding(
           padding: EdgeInsets.only(top: 140, left: 30, right: 30),
-          child: ListView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: <Widget>[
-              Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(top: 50),
-                  child: Text(
-                    'LOGIN',
-                    style: TextStyle(
-                        color: Colors.pinkAccent,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 45),
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              CustomTextField(controller: nameController, label: "User Name"),
-              SizedBox(
-                height: 20,
-              ),
-              CustomTextField(
-                  controller: passwordController,
-                  label: "Password",
-                  isObscure: true),
-
-              // FlatButton(
-              //   onPressed: (){
-              //     //forgot password screen
-              //   },
-              //   textColor: Colors.blue,
-              //   child: Text('Forgot Password'),
-              // ),
-
-              SizedBox(
-                height: 40,
-              ),
-              Container(
-                  height: 50,
-                  // padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.pinkAccent),
+          child: Center(
+            child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(top: 50),
                     child: Text(
                       'LOGIN',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20),
-                    ),
-                    onPressed: () {
-                      this.validate();
-                    },
-                  )),
-            ],
+                          color: Colors.pinkAccent,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 45),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                CustomTextField(controller: nameController, label: "User Name"),
+                SizedBox(
+                  height: 20,
+                ),
+                CustomTextField(
+                    controller: passwordController,
+                    label: "Password",
+                    isObscure: true),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                    height: 50,
+                    // padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: defaultTargetPlatform == TargetPlatform.iOS
+                              ? StadiumBorder()
+                              : null,
+                          primary: Colors.pinkAccent),
+                      child: Text(
+                        'LOGIN',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20),
+                      ),
+                      onPressed: () {
+                        this.validate();
+                      },
+                    )),
+              ],
+            ),
           ),
         )));
   }
 
-  //Password Validation
   validate() async {
     print(nameController.text);
     print(passwordController.text);
-    if (nameController.text == "Navindu" && passwordController.text == "1234") {
+    if ((nameController.text == "admin" &&
+            passwordController.text == "admin") ||
+        (nameController.text == "20S07047" &&
+            passwordController.text == "malith")) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('user', nameController.text);
       UtilFunctions.navigateTo(context, HOME());

@@ -1,16 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Answer extends StatelessWidget {
   const Answer({
     Key? key,
-    required this.answerText,
+    required this.ans,
     required this.correct,
     required this.answerWasSelected,
     required this.answerColor,
     required this.answerTap,
   }) : super(key: key);
 
-  final String answerText;
+  final String ans;
   final bool correct;
   final bool answerWasSelected;
   final Color answerColor;
@@ -27,17 +28,18 @@ class Answer extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             // border: Border.all(color: answerColor, width: 3),
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: defaultTargetPlatform == TargetPlatform.iOS
+                ? BorderRadius.circular(30.0)
+                : BorderRadius.circular(10.0),
           ),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.only(left: 25),
               child: RichText(
                 text: TextSpan(
-                  // style: Theme.of(context).textTheme.body1,
                   children: [
                     TextSpan(
-                        text: answerText,
+                        text: ans,
                         style: TextStyle(color: answerColor, fontSize: 16)),
                     WidgetSpan(
                       alignment: PlaceholderAlignment.middle,

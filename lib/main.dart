@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'Views/Splash_screen.dart';
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
   runApp(MyApp());

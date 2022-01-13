@@ -23,9 +23,7 @@ class _QuestionState extends State<Question> {
   void _questionAnswered(bool answerScore) {
     print("answered");
     setState(() {
-      // answer was selected
       answerWasSelected = true;
-      // check if answer was correct
       if (answerScore) {
         _totalScore++;
         correctAnswerSelected = true;
@@ -42,7 +40,6 @@ class _QuestionState extends State<Question> {
             gravity: ToastGravity.BOTTOM,
             webPosition: "center");
       }
-      // adding to the score tracker on top
       _scoreTracker.add(
         answerScore
             ? Icon(
@@ -54,7 +51,6 @@ class _QuestionState extends State<Question> {
                 color: Colors.pinkAccent,
               ),
       );
-      //when the quiz ends
       if (_questionIndex + 1 == _questions.length) {
         endOfQuiz = true;
       }
@@ -117,7 +113,7 @@ class _QuestionState extends State<Question> {
                 width: double.infinity,
                 height: 130.0,
                 margin: EdgeInsets.only(left: 30.0, right: 30.0),
-                padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
                 decoration: BoxDecoration(
                   color: Colors.pinkAccent,
                   borderRadius: BorderRadius.circular(10.0),
@@ -141,7 +137,7 @@ class _QuestionState extends State<Question> {
                       as List<Map<String, Object>>)
                   .map(
                 (answer) => Answer(
-                  answerText: answer['answerText'].toString(),
+                  ans: answer['ans'].toString(),
                   correct: answer['score'] as bool,
                   answerWasSelected: answerWasSelected,
                   answerColor: answerWasSelected
@@ -150,12 +146,10 @@ class _QuestionState extends State<Question> {
                           : Colors.pinkAccent
                       : Color.fromRGBO(40, 37, 97, 1),
                   answerTap: () {
-                    // if answer was already selected then nothing happens onTap
                     if (answerWasSelected) {
                       print('already selected');
                       return;
                     }
-                    //answer is being selected
                     _questionAnswered(answer['score'] as bool);
                   },
                 ),
@@ -165,6 +159,9 @@ class _QuestionState extends State<Question> {
                 padding: EdgeInsets.only(bottom: 10.0, left: 30.0, right: 30.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    shape: defaultTargetPlatform == TargetPlatform.iOS
+                        ? StadiumBorder()
+                        : null,
                     primary: Colors.pinkAccent,
                     minimumSize: Size(double.infinity, 70.0),
                   ),
@@ -206,7 +203,7 @@ class _QuestionState extends State<Question> {
                       _nextQuestion();
                   },
                   child: Text(
-                    endOfQuiz ? 'Restart Quiz' : 'Next Question',
+                    endOfQuiz ? 'Finish' : 'Next Question',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -221,91 +218,120 @@ class _QuestionState extends State<Question> {
     );
   }
 }
+
+final _questions = const [
+  {
+    'question': 'Which element is used to made the Electric bulb filament?',
+    'answers': [
+      {'ans': 'Copper', 'score': false},
+      {'ans': 'Aluminum', 'score': false},
+      {'ans': 'Lead', 'score': false},
+      {'ans': 'Tungsten', 'score': true},
+    ],
+  },
+  {
+    'question':
+        'Which of the following is a non metal liquid at room temperature?',
+    'answers': [
+      {'ans': 'Phosphorous', 'score': false},
+      {'ans': 'Bromine', 'score': true},
+      {'ans': 'Chlorine', 'score': false},
+      {'ans': 'Helium', 'score': false},
+    ],
+  },
+  {
+    'question': 'Which of the following is used in pencils?',
+    'answers': [
+      {'ans': 'Graphite', 'score': true},
+      {'ans': 'Silicon', 'score': false},
+      {'ans': 'Charcoal', 'score': false},
+      {'ans': 'Phosphorous', 'score': false},
+    ],
+  },
+  {
+    'question': 'Chemical formula for water is',
+    'answers': [
+      {'ans': 'NaAL02', 'score': false},
+      {'ans': 'H20', 'score': true},
+      {'ans': 'AL2O3', 'score': false},
+      {'ans': 'CaSiO3', 'score': false},
+    ],
+  },
+  {
+    'question': 'The gas usually filled in the electric bulb is',
+    'answers': [
+      {'ans': 'Nitrogen', 'score': true},
+      {'ans': 'Hydrogen', 'score': false},
+      {'ans': 'Carbon dioxide', 'score': false},
+      {'ans': 'Oxygen', 'score': false},
+    ],
+  },
+  {
+    'question': 'Which of the gas is not known as green house gas?',
+    'answers': [
+      {'ans': 'Methane', 'score': false},
+      {'ans': 'Nitrous oxide', 'score': false},
+      {'ans': 'Carbon dioxide', 'score': false},
+      {'ans': 'Hydrogen', 'score': true},
+    ],
+  },
+  {
+    'question': 'In which of the following activities silicon carbide is used?',
+    'answers': [
+      {'ans': 'Making cement and glass', 'score': false},
+      {'ans': 'Disinfecting water of ponds', 'score': false},
+      {'ans': 'Cutting very hard substances', 'score': true},
+      {'ans': 'Making casts for statues', 'score': false},
+    ],
+  },
+  {
+    'question': 'Carbon, diamond and graphite are together called',
+    'answers': [
+      {'ans': 'Allotrope', 'score': true},
+      {'ans': 'Isomers', 'score': false},
+      {'ans': 'Isomorphs', 'score': false},
+      {'ans': 'Isotopes', 'score': false},
+    ],
+  },
+  {
+    'question': 'Potassium nitrate is used in',
+    'answers': [
+      {'ans': 'Medicine', 'score': false},
+      {'ans': 'Fertilizer', 'score': true},
+      {'ans': 'Salt', 'score': false},
+      {'ans': 'Glass', 'score': false},
+    ],
+  },
+  {
+    'question':
+        'Permanent hardness of water may be removed by the addition of:',
+    'answers': [
+      {'ans': 'Sodium Carbonate', 'score': true},
+      {'ans': 'Aluminum', 'score': false},
+      {'ans': 'Potassium Permanganate', 'score': false},
+      {'ans': 'Lime', 'score': false},
+    ],
+  },
+  // {
+  //   'question': 'Which of the following is in liquid form at room temperature?',
+  //   'answers': [
+  //     {'ans': 'Lithium', 'score': false},
+  //     {'ans': 'Aluminum', 'score': false},
+  //     {'ans': 'Francium', 'score': true},
+  //     {'ans': 'Cerium', 'score': false},
+  //   ],
+  // },
+];
+
 // final _questions = const [
 //   {
 //     'question': 'question',
 //     'answers': [
-//       {'answerText': 'answerText', 'score': true},
-//       {'answerText': 'answerText', 'score': false},
-//       {'answerText': 'answerText', 'score': false},
+//       {'ans': 'ans', 'score': true},
+//       {'ans': 'ans', 'score': false},
+//       {'ans': 'ans', 'score': false},
+//       {'ans': 'ans', 'score': false},
 //     ],
 //   },
 
 // ];
-
-final _questions = const [
-  {
-    'question': 'How long is New Zealand’s Ninety Mile Beach?',
-    'answers': [
-      {'answerText': '88km, so 55 miles long.', 'score': true},
-      {'answerText': '55km, so 34 miles long.', 'score': false},
-      {'answerText': '90km, so 56 miles long.', 'score': false},
-    ],
-  },
-  {
-    'question':
-        'In which month does the German festival of Oktoberfest mostly take place?',
-    'answers': [
-      {'answerText': 'January', 'score': false},
-      {'answerText': 'October', 'score': false},
-      {'answerText': 'September', 'score': true},
-    ],
-  },
-  {
-    'question': 'Who composed the music for Sonic the Hedgehog 3?',
-    'answers': [
-      {'answerText': 'Britney Spears', 'score': false},
-      {'answerText': 'Timbaland', 'score': false},
-      {'answerText': 'Michael Jackson', 'score': true},
-    ],
-  },
-  {
-    'question': 'In Georgia (the state), it’s illegal to eat what with a fork?',
-    'answers': [
-      {'answerText': 'Hamburgers', 'score': false},
-      {'answerText': 'Fried chicken', 'score': true},
-      {'answerText': 'Pizza', 'score': false},
-    ],
-  },
-  {
-    'question':
-        'Which part of his body did musician Gene Simmons from Kiss insure for one million dollars?',
-    'answers': [
-      {'answerText': 'His tongue', 'score': true},
-      {'answerText': 'His leg', 'score': false},
-      {'answerText': 'His butt', 'score': false},
-    ],
-  },
-  {
-    'question': 'In which country are Panama hats made?',
-    'answers': [
-      {'answerText': 'Ecuador', 'score': true},
-      {'answerText': 'Panama (duh)', 'score': false},
-      {'answerText': 'Portugal', 'score': false},
-    ],
-  },
-  {
-    'question': 'From which country do French fries originate?',
-    'answers': [
-      {'answerText': 'Belgium', 'score': true},
-      {'answerText': 'France (duh)', 'score': false},
-      {'answerText': 'Switzerland', 'score': false},
-    ],
-  },
-  {
-    'question': 'Which sea creature has three hearts?',
-    'answers': [
-      {'answerText': 'Great White Sharks', 'score': false},
-      {'answerText': 'Killer Whales', 'score': false},
-      {'answerText': 'The Octopus', 'score': true},
-    ],
-  },
-  {
-    'question': 'Which European country eats the most chocolate per capita?',
-    'answers': [
-      {'answerText': 'Belgium', 'score': false},
-      {'answerText': 'The Netherlands', 'score': false},
-      {'answerText': 'Switzerland', 'score': true},
-    ],
-  },
-];

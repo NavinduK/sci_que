@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     )),
                     FadeInUp(
                         child: Text(
-                      "Navindu Kavishka",
+                      "Malith Shaminda",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 17,
