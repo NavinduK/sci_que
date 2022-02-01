@@ -24,7 +24,6 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 3), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if (prefs.getString('user') != null) {
-        print(prefs.getString('user'));
         UtilFunctions.navigateTo(context, HOME());
       } else
         UtilFunctions.navigateTo(context, LoginPage());

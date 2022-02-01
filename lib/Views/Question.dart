@@ -21,18 +21,13 @@ class _QuestionState extends State<Question> {
   bool correctAnswerSelected = false;
 
   void _questionAnswered(bool answerScore) {
-    print("answered");
     setState(() {
       answerWasSelected = true;
       if (answerScore) {
         _totalScore++;
         correctAnswerSelected = true;
       }
-      print(answerWasSelected);
-      print(endOfQuiz);
-      print(correctAnswerSelected);
       if (!endOfQuiz && !correctAnswerSelected) {
-        print('correct toast');
         Fluttertoast.showToast(
             msg: "Wrong answer",
             fontSize: 20,
@@ -58,7 +53,6 @@ class _QuestionState extends State<Question> {
   }
 
   void _nextQuestion() {
-    print('next');
     setState(() {
       _questionIndex++;
       answerWasSelected = false;
@@ -94,7 +88,7 @@ class _QuestionState extends State<Question> {
           child: Column(
             children: [
               SizedBox(
-                height: 50.0,
+                height: 30.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +101,7 @@ class _QuestionState extends State<Question> {
                 ],
               ),
               SizedBox(
-                height: 40.0,
+                height: 30.0,
               ),
               Container(
                 width: double.infinity,
@@ -147,7 +141,6 @@ class _QuestionState extends State<Question> {
                       : Color.fromRGBO(40, 37, 97, 1),
                   answerTap: () {
                     if (answerWasSelected) {
-                      print('already selected');
                       return;
                     }
                     _questionAnswered(answer['score'] as bool);

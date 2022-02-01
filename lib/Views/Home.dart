@@ -23,7 +23,7 @@ class _HOMEState extends State<HOME> {
       body: Container(
         child: Center(
           child: ListView(
-              padding: EdgeInsets.only(top: 50, left: 50, right: 50),
+              padding: EdgeInsets.only(top: 30, left: 50, right: 50),
               children: <Widget>[
                 Container(
                     alignment: Alignment.center,
@@ -92,7 +92,7 @@ class _HOMEState extends State<HOME> {
                   textAlign: TextAlign.center,
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 5, left: 55, right: 55),
+                  padding: EdgeInsets.only(top: 5),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           shape: defaultTargetPlatform == TargetPlatform.iOS
@@ -106,7 +106,7 @@ class _HOMEState extends State<HOME> {
                         style: TextStyle(
                             color: Color.fromRGBO(40, 37, 97, 1),
                             fontWeight: FontWeight.w700,
-                            fontSize: 17),
+                            fontSize: 16),
                       ),
                       onPressed: () => UtilFunctions.launchURL(
                           'https://www.coursera.org/search?query=science')),
